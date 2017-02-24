@@ -22,7 +22,7 @@ There are two type of MPC controllers (located at folder \nmpc), namely:
 1. ideal NMPC (iNMPC) --> file iNMPC.m
 2. path-following (pf-NMPC) --> file pfNMPC.m
 
-The main file for code is NMPCDistCstr.m (located at \models\disColA). Here, one can choose to use either iNMPC of pfNMPC controller.
+Main file for the code is NMPCDistCstr.m (located at \models\disColA). Here, one can choose to use either iNMPC of pfNMPC controller.
 
 
 Enjoy!
