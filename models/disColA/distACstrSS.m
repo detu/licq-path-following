@@ -50,8 +50,8 @@ end
 u1  = SX.sym('u1');   % LT
 u2  = SX.sym('u2');   % VB
 u3  = SX.sym('u3');   % F
-u4  = SX.sym('u3');   % D
-u5  = SX.sym('u4');   % B
+u4  = SX.sym('u4');   % D
+u5  = SX.sym('u5');   % B
 % concatenate states and controls 
 x   = vertcat(x{:});
 x   = [x;u1;u2;u3;u4;u5];

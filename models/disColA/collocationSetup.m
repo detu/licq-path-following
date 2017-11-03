@@ -6,8 +6,8 @@ import casadi.*
 d = 3;
 
 % Get collocation points
-tau_root = [0 collocation_points(d, 'legendre')];
-%tau_root = [0 collocation_points(d, 'radau')];
+%tau_root = [0 collocation_points(d, 'legendre')];
+tau_root = [0 collocation_points(d, 'radau')];
 
 % Coefficients of the collocation equation
 C = zeros(d+1,d+1);
