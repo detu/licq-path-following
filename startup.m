@@ -1,19 +1,8 @@
 % Startup code should be run at the beginning. 
 % This code is to include all the directories (set path). 
 
-cd utils
-p = strcat(ROOTDIR,                                   ...
-           {                                          ...
-            '',                                       ...
-            'models',                                 ...
-            ['models', filesep, 'disColA'],           ...
-            ['models', filesep, 'gasLift'],           ...
-            'nmpc',                                   ...
-            'predictor',                              ...
-            'utils',                                  ...
-           }, pathsep);
-addpath([p{:}]);
-
+folder = fileparts(which(mfilename));
+addpath(genpath(folder));
 
 % windows path
 if (ispc)
@@ -21,6 +10,7 @@ if (ispc)
 end
 % linux path
 if(isunix)
+  addpath(genpath('/home/detu/work/casadi355'));
 end
 clear p;
 cd ..
