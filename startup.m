@@ -1,26 +1,13 @@
-% Startup code should be run at the beginning. 
-% This code is to include all the directories (set path). 
-
-cd utils
-p = strcat(ROOTDIR,                                   ...
-           {                                          ...
-            '',                                       ...
-            'models',                                 ...
-            ['models', filesep, 'disColA'],           ...
-            ['models', filesep, 'gasLift'],           ...
-            'nmpc',                                   ...
-            'predictor',                              ...
-            'utils',                                  ...
-           }, pathsep);
-addpath([p{:}]);
+% Determine where your m-file's folder is.
+folder = fileparts(which(mfilename)); 
+% Add that folder plus all subfolders to the path.
+addpath(genpath(folder));
 
 
-% windows path
-if (ispc)
-    addpath('C:\Data\work\casadi-matlabR2014b-v3.1.0-rc1');
-end
-% linux path
+% disable warning message
+warning off;
+
 if(isunix)
+   addpath(genpath('/home/detu/work/casadi355'));
 end
-clear p;
-cd ..
+
