@@ -17,6 +17,10 @@ function NMPCDistCstr
 import casadi.* 
 format long;
 
+% for the QP solver interface
+setenv('BLAS_VERSION','/opt/intel/oneapi/mkl/2021.2.0/lib/intel64/libmkl_rt.so');
+setenv('LAPACK_VERSION','/opt/intel/oneapi/mkl/2021.2.0/lib/intel64/libmkl_rt.so');
+
 global N;
 % number of mpc iteration
 mpciterations = 150;
@@ -44,10 +48,10 @@ xmeasure      = Xinit29(1:84);
 %xmeasure      = Xinit28(1:84);
 
 % either call iNMPC 
-[~, xmeasureAll, uAll, obj, optRes, params, runtime] = iNmpc(@optProblem, @system, mpciterations, N, T, tmeasure, xmeasure, u0);
+%[~, xmeasureAll, uAll, obj, optRes, params, runtime] = iNmpc(@optProblem, @system, mpciterations, N, T, tmeasure, xmeasure, u0);
 
 % or pf-NMPC
-%[~, xmeasureAll_pf, uAll_pf, obj_pf, optRes_pf, params_pf, runtime_pf] = pfNmpc(@optProblem, @system, mpciterations, N, T, tmeasure, xmeasure, u0);
+[~, xmeasureAll_pf, uAll_pf, obj_pf, optRes_pf, params_pf, runtime_pf] = pfNmpc(@optProblem, @system, mpciterations, N, T, tmeasure, xmeasure, u0);
  
 
 keyboard;

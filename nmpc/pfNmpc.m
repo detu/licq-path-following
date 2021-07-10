@@ -68,7 +68,8 @@ while(mpciter <= mpciterations)
     ub_init = ub;
     
     % NLP sensitivity (predictor-corrector)
-    [primalPF, ~, elapsedqp] = jpredictor_licq_pure_3(@(p)distColACstr_pn(p), p_init, p_final, xstart, ystart, delta_t, lb_init, ub_init, 0, N);
+    %[primalPF, ~, elapsedqp] = jpredictor_licq_pure_3(@(p)distColACstr_pn(p), p_init, p_final, xstart, ystart, delta_t, lb_init, ub_init, 0, N);
+    [primalPF, ~, elapsedqp] = jpredictor_licq_pure_3(@(p)distColACstr_pnNew(p), p_init, p_final, xstart, ystart, delta_t, lb_init, ub_init, 0, N);
     
      
     %[u_nlp_opt, x_nlp_opt] = plotStatesN(primalNLP, lb, ub, N);  % distillation column plot
