@@ -50,7 +50,8 @@ while (t <= 1)
     
     % solve QP problem
     % output from QP is y (directional derivative)
-    [y, ~, qp_exit, lamda, qp_run] = solve_qp(prob, p_init, x_init, y_init, step, lb, ub, N, x0, lb_init, ub_init);  % supply initial guess
+    %[y, ~, qp_exit, lamda, qp_run] = solve_qp(prob, p_init, x_init, y_init, step, lb, ub, N, x0, lb_init, ub_init);  % supply initial guess
+    [y, ~, qp_exit, ~, qp_run] = solve_qp(prob, p_init, x_init, y_init, step, lb, ub, N, x0, lb_init, ub_init); 
     elapsedqp = elapsedqp + qp_run;
     if (qp_exit < 0) % QP is infeasible
         
@@ -69,7 +70,7 @@ while (t <= 1)
         
         % update states, multipliers, parameter, and time step
         x_init       = x_init + y; 
-        y_init.lam_x = y_init.lam_x - lamda.lam_x; % - (minus) because TOMLAB has different sign compared to IPOPT
+        %y_init.lam_x = y_init.lam_x - lamda.lam_x; % - (minus) because TOMLAB has different sign compared to IPOPT
 
         t       = t + delta_t;
         p_init  = p_t;
@@ -119,48 +120,66 @@ function [y, qp_val, qp_exit, lamda, elapsedqp] = solve_qp(prob, p, x_init, y_in
     beq  = dpe*step + ceq;   %OK
 
        
-    % CHECK LAGRANGE MULTIPLIERS FROM BOUND CONSTRAINTS 
-    lmC = abs(y_init.lam_x);
-    bAc = find(lmC >= 1e-3);
-    
-    % build equality constraint from active bound constraints
-    numBaC = size(bAc,1);
-    for i=1:numBaC        
-        % put strongly active constraint on boundary
-        indB         = bAc(i);
-        
-        ub(indB)     = 0;        % keep upper bound on boundary
-        lb(indB)     = 0; 
-        
-    end
-
+%     % CHECK LAGRANGE MULTIPLIERS FROM BOUND CONSTRAINTS 
+%     lmC = abs(y_init.lam_x);
+%     bAc = find(lmC >= 1e-3);
+%     
+%     % build equality constraint from active bound constraints
+%     numBaC = size(bAc,1);
+%     for i=1:numBaC        
+%         % put strongly active constraint on boundary
+%         indB         = bAc(i);
+%         
+%         ub(indB)     = 0;        % keep upper bound on boundary
+%         lb(indB)     = 0; 
+%         
+%     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Finally solve QP problem
     %%%%%%%%%%%%%%%%%%%%%%%%%%%
-    Prob   = qpAssign(H, f, Aeq, beq, beq, lb, ub);
-    Prob.optParam.eps_x = 1e-7;
-    Prob.optParam.fTol  = 1e-7;
-    Prob.optParam.xTol  = 1e-7;
-    %Prob.PriLevOpt = 5;
-    %Prob.PriLev = 1;
-    startqp  = tic;
-    Result = tomRun('qp-minos', Prob, 1);
+%     Prob   = qpAssign(H, f, Aeq, beq, beq, lb, ub);
+%     Prob.optParam.eps_x = 1e-7;
+%     Prob.optParam.fTol  = 1e-7;
+%     Prob.optParam.xTol  = 1e-7;
+%     %Prob.PriLevOpt = 5;
+%     %Prob.PriLev = 1;
+%     startqp  = tic;
+%     Result = tomRun('qp-minos', Prob, 1);
+% 
+%     elapsedqp = toc(startqp);
+%     fprintf('QP solver runtime: %f\n',elapsedqp);
+%     qp_exit = Result.ExitFlag;
+%     if qp_exit == 0
+%         y       = Result.x_k;
+%         qp_val  = Result.f_k;
+%     else
+%         keyboard;
+%     end
+% 
+%     numX        = size(x_init,1);
+%     lamda.lam_x = Result.v_k(1:numX);
+%     lamda.lam_g = -Result.v_k(numX+1:end);
+%     fprintf('QP return: %d\n', qp_exit);
+    
+    x0     = sparse(x0);
+    lambda = sparse(zeros(size(Aeq,1),1));
+    beq    = sparse(beq);
+    lb     = sparse(lb);
+    ub     = sparse(ub);
+    H      = sparse(H);
+    f      = sparse(f);
+    Aeq    = sparse(Aeq);
 
+
+    startqp   = tic;
+    xsol      = qpAL(H,f,Aeq,beq,lb,ub,x0,lambda);
     elapsedqp = toc(startqp);
-    fprintf('QP solver runtime: %f\n',elapsedqp);
-    qp_exit = Result.ExitFlag;
-    if qp_exit == 0
-        y       = Result.x_k;
-        qp_val  = Result.f_k;
-    else
-        keyboard;
-    end
 
-    numX        = size(x_init,1);
-    lamda.lam_x = Result.v_k(1:numX);
-    lamda.lam_g = -Result.v_k(numX+1:end);
-    fprintf('QP return: %d\n', qp_exit);
+    keyboard;
+    y       = xsol;
+    qp_val  = 0;  % need to compute from the optimizer
+    qp_exit = 0;  % HARDCODE for testing purposes
     
 end
 
